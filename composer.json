@@ -1,0 +1,39 @@
+{
+    "name": "mikegarde/laravel-datadog-batched",
+    "type": "library",
+    "license": "GPL-3.0",
+    "homepage": "https://github.com/mikegarde/laravel-datadog-batched",
+    "authors": [
+        {
+            "name": "Mike Garde",
+            "email": "mgarde@gmail.com"
+        }
+    ],
+    "require": {
+        "datadog/php-datadogstatsd": "^1.4",
+        "doctrine/orm": "2.5.*@dev",
+        "illuminate/support": "~5.1",
+        "laravel-doctrine/orm": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.7.27 - 8"
+    },
+    "autoload": {
+        "psr-4": {
+            "MikeGarde\\LaravelDataDogBatched\\": "src"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MikeGarde\\LaravelDataDogBatched\\DataDogServiceProvider"
+            ],
+            "aliases": {
+                "DataDog": "MikeGarde\\LaravelDataDogBatched\\DataDogHelper"
+            }
+        }
+    }
+}
