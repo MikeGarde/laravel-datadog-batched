@@ -1,1 +1,5 @@
-larvel-datadog-batched
+## Install
+
+```bash
+php artisan vendor:publish --provider="MikeGarde\LaravelDataDogBatched\DataDogServiceProvider"
+```
