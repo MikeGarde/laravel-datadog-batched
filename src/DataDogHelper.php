@@ -206,12 +206,4 @@ class DataDogHelper
 	{
 		$this->dd->flush_buffer();
 	}
-
-	/**
-	 * Lets wrap it up
-	 */
-	public function __destruct()
-	{
-		$this->flush();
-	}
 }

@@ -53,5 +53,6 @@ class DataDogMiddleware
 		DataDog::set('uniques', $user);
 		DataDog::increment('request', 1, $resource);
 		DataDog::recordTiming('timing', 1, $resource);
+		DataDog::flush();
 	}
 }
