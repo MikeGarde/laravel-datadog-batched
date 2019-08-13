@@ -2,8 +2,6 @@
 
 ### config/app.php
 
-Add the following
-
 ```php
 return [
     'providers' => [
@@ -16,7 +14,15 @@ return [
 ];
 ```
 
-Add the config to your repo
+### app/Http/Kernel.php
+
+```php
+	protected $middleware = [
+        \MikeGarde\LaravelDataDogBatched\DataDogMiddleware::class,
+	];
+```
+
+### config/datadog.php
 
 ```bash
 php artisan vendor:publish --provider="MikeGarde\LaravelDataDogBatched\DataDogServiceProvider"

@@ -31,6 +31,16 @@ class DoctrineFileLogger implements SQLLogger
 	protected $query;
 
 	/**
+	 * @var string
+	 */
+	private $category;
+
+	/**
+	 * @var string
+	 */
+	private $type;
+
+	/**
 	 * @param Log $logger
 	 */
 	public function __construct(Log $logger)
@@ -52,6 +62,7 @@ class DoctrineFileLogger implements SQLLogger
 	{
 		$this->start = microtime(true);
 		$this->query = $this->formatter->format($sql, $params);
+		$this->identifyCommand();
 	}
 
 
@@ -61,27 +72,10 @@ class DoctrineFileLogger implements SQLLogger
 	 */
 	public function stopQuery()
 	{
-		//$this->logger->debug($this->getQuery(), [$this->getExecutionTime()]);
-		$c = strtoupper(substr($this->getQuery(), 0, 1));
-
-		switch ($c)
-		{
-			case 'S':
-				$tag = ['action' => 'select'];
-				break;
-			case 'I':
-				$tag = ['action' => 'insert'];
-				break;
-			case 'U':
-				$tag = ['action' => 'update'];
-				break;
-			case 'D':
-				$tag = ['action' => 'delete'];
-				break;
-			default:
-				$tag = ['action' => 'unknown'];
-		}
-
+		$tag = [
+			'category' => $this->category,
+			'type'     => $this->type,
+		];
 		DataDog::increment('sql', 1, $tag);
 		DataDog::microtiming('sql.timing', $this->getExecutionTime(), 1, $tag);
 	}
@@ -100,5 +94,48 @@ class DoctrineFileLogger implements SQLLogger
 	protected function getExecutionTime()
 	{
 		return microtime(true) - $this->start;
+	}
+
+	protected function identifyCommand()
+	{
+		$sql = strtolower($this->query);
+
+		$t['create']    = ['DDL', strpos($sql, 'create')];
+		$t['drop']      = ['DDL', strpos($sql, 'drop')];
+		$t['alter']     = ['DDL', strpos($sql, 'alter')];
+		$t['truncate']  = ['DDL', strpos($sql, 'truncate')];
+		$t['comment']   = ['DDL', strpos($sql, 'comment')];
+		$t['rename']    = ['DDL', strpos($sql, 'rename')];
+		$t['select']    = ['DML', strpos($sql, 'select')];
+		$t['insert']    = ['DML', strpos($sql, 'insert')];
+		$t['update']    = ['DML', strpos($sql, 'update')];
+		$t['delete']    = ['DML', strpos($sql, 'delete')];
+		$t['grant']     = ['DCL', strpos($sql, 'grant')];
+		$t['revoke']    = ['DCL', strpos($sql, 'revoke')];
+		$t['commit']    = ['TCL', strpos($sql, 'commit')];
+		$t['rollback']  = ['TCL', strpos($sql, 'rollback')];
+		$t['savepoint'] = ['TCL', strpos($sql, 'savepoint')];
+		$t['set']       = ['TCL', strpos($sql, 'set')];
+
+		foreach ($t as $key => $value)
+		{
+			if ($value[1] === false)
+			{
+				unset($t[ $key ]);
+			}
+		}
+
+		if ($t)
+		{
+			asort($t);
+
+			$this->type     = key($t);
+			$this->category = $t[ $this->type ][0];
+		}
+		else
+		{
+			$this->category = 'unknown';
+			$this->type     = 'unknown';
+		}
 	}
 }

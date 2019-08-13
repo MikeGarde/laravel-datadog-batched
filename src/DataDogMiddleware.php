@@ -42,18 +42,16 @@ class DataDogMiddleware
 		else
 		{
 			$user     = $request->getAuthenticatedUserId();
-			$resource = explode('?', $request->getRequestUri());
-			$resource = trim(str_replace('/', '.', $resource[0]), '.');
 			$resource = [
-				'api'    => $resource,
+				'route'  => (app('router')->getCurrentRoute()->uri()) ?: '',
 				'method' => $request->getMethod(),
+				'api'    => implode('/', $request->segments()),
+				'status' => $response->status(),
 			];
 		}
 
-		$time = microtime(true);
-
-		DataDog::increment('request', 1, $resource);
 		DataDog::set('uniques', $user);
+		DataDog::increment('request', 1, $resource);
 		DataDog::recordTiming('timing', 1, $resource);
 	}
 }
