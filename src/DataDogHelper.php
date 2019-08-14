@@ -59,6 +59,11 @@ class DataDogHelper
 	 */
 	private function send($data, $sampleRate = 1.0, $tags = null)
 	{
+		if (!config('datadog.enabled'))
+		{
+			return;
+		}
+
 		foreach ($data as $key => $value)
 		{
 			$newData = [config('datadog.prefix') . '.' . $key => $value];
@@ -204,6 +209,9 @@ class DataDogHelper
 	 */
 	public function flush()
 	{
-		$this->dd->flush_buffer();
+		if (config('datadog.enabled'))
+		{
+			$this->dd->flush_buffer();
+		}
 	}
 }

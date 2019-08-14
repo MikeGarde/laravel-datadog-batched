@@ -30,6 +30,15 @@ php artisan vendor:publish --provider="MikeGarde\LaravelDataDogBatched\DataDogSe
 
 Review the config and name the `prefix` appropriately
 
+Tip: enable or disable based on environment
+
+```php
+return [
+	'enabled'         => (env('APP_ENV') === 'prod' || env('APP_ENV') === 'qa'),
+	'prefix'          => 'app.APIv2',
+];
+```
+
 ### config/doctrine.php
 
 If desired to log SQL interactions and duration 
