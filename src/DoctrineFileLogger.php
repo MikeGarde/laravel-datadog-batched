@@ -67,6 +67,7 @@ class DoctrineFileLogger implements SQLLogger
 		$tag = [
 			'category' => $this->category,
 			'type'     => $this->type,
+			'route'    => (app('router')->getCurrentRoute()->uri()) ?: '',
 		];
 		DataDog::increment('sql', 1, $tag);
 		DataDog::microtiming('sql.timing', $this->getExecutionTime(), 1, $tag);
