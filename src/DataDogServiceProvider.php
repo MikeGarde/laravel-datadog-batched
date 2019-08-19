@@ -36,7 +36,7 @@ class DataDogServiceProvider extends ServiceProvider
 				'host'                 => config('datadog.statsd_server'),
 				'port'                 => config('datadog.statsd_port'),
 				'socket_path'          => null, # supported above agent v6
-				'global_tags'          => null,
+				'global_tags'          => config('datadog.global_tags'),
 				'api_key'              => config('datadog.api_key'),
 				'app_key'              => config('datadog.application_key'),
 				'curl_ssl_verify_host' => 2,

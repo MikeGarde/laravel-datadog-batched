@@ -28,6 +28,11 @@ class FileLogger implements Logger
 	 */
 	public function register(EntityManagerInterface $em, Configuration $configuration)
 	{
+		if (!config('datadog.enabled'))
+		{
+			return;
+		}
+
 		$logger = new DoctrineFileLogger($this->logger);
 		$configuration->setSQLLogger($logger);
 	}

@@ -1,8 +1,10 @@
 ## Install
 
-### config/app.php
+Using [Composer/Packagist](https://packagist.org/packages/mikegarde/laravel-datadog-batched)
 
-Add the following
+`composer install laravel-datadog-batched`
+
+### config/app.php
 
 ```php
 return [
@@ -16,13 +18,30 @@ return [
 ];
 ```
 
-Add the config to your repo
+### app/Http/Kernel.php
+
+```php
+protected $middleware = [
+    \MikeGarde\LaravelDataDogBatched\DataDogMiddleware::class,
+];
+```
+
+### config/datadog.php
 
 ```bash
 php artisan vendor:publish --provider="MikeGarde\LaravelDataDogBatched\DataDogServiceProvider"
 ```
 
 Review the config and name the `prefix` appropriately
+
+Tip: enable or disable based on environment
+
+```php
+return [
+	'enabled'         => (env('APP_ENV') === 'prod' || env('APP_ENV') === 'qa'),
+	'prefix'          => 'app.APIv2',
+];
+```
 
 ### config/doctrine.php
 
