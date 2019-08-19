@@ -64,10 +64,14 @@ class DoctrineFileLogger implements SQLLogger
 	 */
 	public function stopQuery()
 	{
+		$tmp   = app('router')->getCurrentRoute();
+		$tmp   = method_exists($tmp, 'uri') ? $tmp->uri() : 'composerInstall';
+		$route = ($tmp) ?: '';
+
 		$tag = [
 			'category' => $this->category,
 			'type'     => $this->type,
-			'route'    => (app('router')->getCurrentRoute()->uri()) ?: '',
+			'route'    => $route,
 		];
 		DataDog::increment('sql', 1, $tag);
 		DataDog::microtiming('sql.timing', $this->getExecutionTime(), 1, $tag);
