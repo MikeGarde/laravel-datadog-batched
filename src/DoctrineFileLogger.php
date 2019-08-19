@@ -4,8 +4,6 @@ namespace MikeGarde\LaravelDataDogBatched;
 
 use DataDog;
 use Doctrine\DBAL\Logging\SQLLogger;
-use LaravelDoctrine\ORM\Loggers\Formatters\FormatQueryKeywords;
-use LaravelDoctrine\ORM\Loggers\Formatters\ReplaceQueryParams;
 use Psr\Log\LoggerInterface as Log;
 
 class DoctrineFileLogger implements SQLLogger
@@ -14,11 +12,6 @@ class DoctrineFileLogger implements SQLLogger
 	 * @var Log
 	 */
 	protected $logger;
-
-	/**
-	 * @var FormatQueryKeywords
-	 */
-	protected $formatter;
 
 	/**
 	 * @var float
@@ -45,8 +38,7 @@ class DoctrineFileLogger implements SQLLogger
 	 */
 	public function __construct(Log $logger)
 	{
-		$this->logger    = $logger;
-		$this->formatter = new FormatQueryKeywords(new ReplaceQueryParams);
+		$this->logger = $logger;
 	}
 
 	/**
@@ -61,7 +53,7 @@ class DoctrineFileLogger implements SQLLogger
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
 		$this->start = microtime(true);
-		$this->query = $this->formatter->format($sql, $params);
+		$this->query = $sql;
 		$this->identifyCommand();
 	}
 

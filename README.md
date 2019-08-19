@@ -1,5 +1,9 @@
 ## Install
 
+Using [Composer/Packagist](https://packagist.org/packages/mikegarde/laravel-datadog-batched)
+
+`composer install laravel-datadog-batched`
+
 ### config/app.php
 
 ```php
@@ -17,9 +21,9 @@ return [
 ### app/Http/Kernel.php
 
 ```php
-	protected $middleware = [
-        \MikeGarde\LaravelDataDogBatched\DataDogMiddleware::class,
-	];
+protected $middleware = [
+    \MikeGarde\LaravelDataDogBatched\DataDogMiddleware::class,
+];
 ```
 
 ### config/datadog.php
