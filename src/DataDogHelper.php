@@ -177,8 +177,6 @@ class DataDogHelper
 	 * @param float        $sampleRate the rate (0-1) for sampling.
 	 * @param array|string $tags       Key Value array of Tag => Value, or single tag as string
 	 * @param int          $value      the amount to increment by (default 1)
-	 *
-	 * @return boolean
 	 **/
 	public function increment($stats, $sampleRate = 1.0, $tags = null, $value = 1)
 	{
@@ -192,8 +190,6 @@ class DataDogHelper
 	 * @param float        $sampleRate the rate (0-1) for sampling.
 	 * @param array|string $tags       Key Value array of Tag => Value, or single tag as string
 	 * @param int          $value      the amount to decrement by (default -1)
-	 *
-	 * @return boolean
 	 **/
 	public function decrement($stats, $sampleRate = 1.0, $tags = null, $value = -1)
 	{
