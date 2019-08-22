@@ -65,7 +65,7 @@ class DoctrineFileLogger implements SQLLogger
 	public function stopQuery()
 	{
 		$tmp   = app('router')->getCurrentRoute();
-		$tmp   = method_exists($tmp, 'uri') ? $tmp->uri() : 'composerInstall';
+		$tmp   = method_exists($tmp, 'uri') ? $tmp->uri() : 'unknown';
 		$route = ($tmp) ?: '';
 
 		$tag = [
@@ -75,6 +75,12 @@ class DoctrineFileLogger implements SQLLogger
 		];
 		DataDog::increment('sql', 1, $tag);
 		DataDog::microtiming('sql.timing', $this->getExecutionTime(), 1, $tag);
+
+		// Some users may enable DataDog on Workers, if so lets periodically flush the buffer to DataDog
+		if (rand(1,100) === 1)
+		{
+			DataDog::flush();
+		}
 	}
 
 	/**
