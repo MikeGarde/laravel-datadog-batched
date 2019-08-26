@@ -37,7 +37,7 @@ class DataDogMiddleware
 		if (!Auth::id())
 		{
 			$user     = 0;
-			$resource = ['api' => 'unauthorized'];
+			$resource = ['route' => 'unauthorized'];
 		}
 		else
 		{
