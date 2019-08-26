@@ -45,7 +45,6 @@ class DataDogMiddleware
 			$resource = [
 				'route'  => (app('router')->getCurrentRoute()->uri()) ?: '',
 				'method' => $request->getMethod(),
-				'api'    => implode('/', $request->segments()),
 				'status' => $response->status(),
 			];
 		}
