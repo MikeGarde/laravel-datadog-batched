@@ -45,7 +45,7 @@ class DataDogMiddleware
 			$resource = [
 				'route'  => (app('router')->getCurrentRoute()->uri()) ?: '',
 				'method' => $request->getMethod(),
-				'status' => $response->status(),
+				'status' => substr($response->status(), 0, 1) . 'xx',
 			];
 		}
 
