@@ -7,7 +7,6 @@ use Closure;
 use DataDog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 class DataDogMiddleware
 {
@@ -34,24 +33,51 @@ class DataDogMiddleware
 	 */
 	public function terminate(Request $request, Response $response)
 	{
+		if (!config('datadog.autoRecord'))
+		{
+			return;
+		}
+
+		$tags = [];
+
 		if (!Auth::id())
 		{
-			$user     = 0;
-			$resource = ['route' => 'unauthorized'];
+			$user = 0;
 		}
 		else
 		{
-			$user     = $request->getAuthenticatedUserId();
-			$resource = [
-				'route'  => (app('router')->getCurrentRoute()->uri()) ?: '',
-				'method' => $request->getMethod(),
-				'status' => substr($response->status(), 0, 1) . 'xx',
-			];
+			$user = $request->getAuthenticatedUserId();
+		}
+
+		if (config('datadog.fullUrl'))
+		{
+			$tags['fullUrl'] = implode('/', $request->segments());
+		}
+
+		if (config('datadog.routes'))
+		{
+			$tmp           = app('router')->getCurrentRoute();
+			$tmp           = method_exists($tmp, 'uri') ? $tmp->uri() : 'unknown';
+			$tags['route'] = ($tmp) ?: '';
+		}
+
+		if (config('datadog.methods'))
+		{
+			$tags['method'] = $request->getMethod();
+		}
+
+		if (config('datadog.statusCodes') === 'group')
+		{
+			$tags['status'] = substr($response->status(), 0, 1) . 'xx';
+		}
+		elseif (config('datadog.statusCodes'))
+		{
+			$tags['status'] = $response->status();
 		}
 
 		DataDog::set('uniques', $user);
-		DataDog::increment('request', 1, $resource);
-		DataDog::recordTiming('timing', 1, $resource);
+		DataDog::increment('request', config('datadog.sampleRate'), $tags);
+		DataDog::recordTiming('timing', config('datadog.sampleRate'), $tags);
 		DataDog::flush();
 	}
 }
