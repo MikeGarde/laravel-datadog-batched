@@ -2,7 +2,7 @@
 
 namespace MikeGarde\LaravelDataDogBatched;
 
-use DataDog;
+use LaravelDataDog;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Psr\Log\LoggerInterface as Log;
 
@@ -75,13 +75,13 @@ class DoctrineFileLogger implements SQLLogger
 			$tag['route'] = $route;
 		}
 
-		DataDog::increment('sql', config('datadog.sampleRate'), $tag);
-		DataDog::microtiming('sql.timing', $this->getExecutionTime(), config('datadog.sampleRate'), $tag);
+		LaravelDataDog::increment('sql', config('datadog.sampleRate'), $tag);
+		LaravelDataDog::microtiming('sql.timing', $this->getExecutionTime(), config('datadog.sampleRate'), $tag);
 
 		// Some users may enable DataDog on Workers, if so lets periodically flush the buffer to DataDog
 		if (rand(1,100) <= 5)
 		{
-			DataDog::flush();
+			LaravelDataDog::flush();
 		}
 	}
 

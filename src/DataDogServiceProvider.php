@@ -18,7 +18,7 @@ class DataDogServiceProvider extends ServiceProvider
 		$this->publishes(
 			[__DIR__ . '/../config/datadog.php' => config_path('datadog.php')],
 			'datadog-config');
-		$this->app->bind('DataDog', DataDogHelper::class);
+		$this->app->bind('LaravelDataDog', DataDogHelper::class);
 	}
 
 	/**
@@ -30,7 +30,7 @@ class DataDogServiceProvider extends ServiceProvider
 	{
 		$this->mergeConfigFrom(__DIR__ . '/../config/datadog.php', 'datadog');
 
-		$this->app->singleton('DataDog', function () {
+		$this->app->singleton('LaravelDataDog', function () {
 
 			return new \MikeGarde\LaravelDataDogBatched\DataDogHelper([
 				'host'                 => config('datadog.statsd_server'),

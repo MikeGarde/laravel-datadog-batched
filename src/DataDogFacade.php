@@ -13,6 +13,6 @@ class DataDogFacade extends Facade
 	 */
 	protected static function getFacadeAccessor()
 	{
-		return 'DataDog';
+		return 'LaravelDataDog';
 	}
 }

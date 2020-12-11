@@ -4,7 +4,7 @@ namespace MikeGarde\LaravelDataDogBatched;
 
 use Auth;
 use Closure;
-use DataDog;
+use LaravelDataDog;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,7 +18,7 @@ class DataDogMiddleware
 	 */
 	public function handle($request, Closure $next)
 	{
-		DataDog::startTime();
+		LaravelDataDog::startTime();
 
 		return $next($request);
 	}
@@ -75,9 +75,9 @@ class DataDogMiddleware
 			$tags['status'] = $response->status();
 		}
 
-		DataDog::set('uniques', $user);
-		DataDog::increment('request', config('datadog.sampleRate'), $tags);
-		DataDog::recordTiming('timing', config('datadog.sampleRate'), $tags);
-		DataDog::flush();
+		LaravelDataDog::set('uniques', $user);
+		LaravelDataDog::increment('request', config('datadog.sampleRate'), $tags);
+		LaravelDataDog::recordTiming('timing', config('datadog.sampleRate'), $tags);
+		LaravelDataDog::flush();
 	}
 }
